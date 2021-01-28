@@ -104,8 +104,26 @@ if [ "$actual_jenkins_version" != "$new_version"  ];then
 	wait_bar
 
 	#Hole Version
-	new_jenkins_version=`java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api version`
+    new_jenkins_version=""
+    i=1
 
+    logInfo "Pruefe auf erreichbarkeit"
+    while [ -z "${new_jenkins_version}" ];do
+        logInfo "Versuch: $i"
+        new_jenkins_version=`java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api version`
+        if [ -z "$new_jenkins_version" ];then
+            logInfo "Jenkins ist noch nicht erreichbar. Warte 20s fuer den naechsten Versuch."
+            sleep 20
+        fi
+        i=$(($i+1))
+    done
+
+    UPDATE_LIST=$( java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api list-plugins | grep -e ')$' | awk '{ print $1 }' );
+    if [ ! -z "${UPDATE_LIST}" ];then
+            logInfo Updating Jenkins Plugins: ${UPDATE_LIST};
+            java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api install-plugin ${UPDATE_LIST};
+            java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api safe-restart;
+    fi
 	logInfo "Neue Version: $new_jenkins_version"
 	logInfo "Jenkins wurde erfolgreich upgedatet. :)"
 
