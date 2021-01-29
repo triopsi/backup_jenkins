@@ -16,7 +16,7 @@
 # 1) Edit the jenkins auth variable
 # 2) chmod +x updater_jenkins.sh
 # 3) ./updater_jenkins.sh 
-# For daily check (every night at 1am)
+# For daily checks (every night at 1am)
 # crontab -e
 # 0 1 * * * /bin/bash -c "path/to/update_jenkins.sh" >> /var/log/updateJenkins.log 2>&1
 
