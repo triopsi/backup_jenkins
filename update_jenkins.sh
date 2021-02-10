@@ -9,7 +9,7 @@
 #                                             | |                             
 #                                             |_|                             
 # Author: Triopsi
-# Date: 27-01-2021
+# Date: 10-02-2021
 # info@triopsi.com
 # Autoupdater for jenkins
 # Usage: 
@@ -55,7 +55,7 @@ function wait_bar
   	echo
 }
 
-logInfo "Jenkins Auto Update v1.0"
+logInfo "Jenkins Auto Update v1.1"
 
 #get the actual version
 actual_jenkins_version=`java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api version | xargs`
@@ -81,6 +81,12 @@ if [ "$actual_jenkins_version" != "$new_version"  ];then
 
 	logInfo "Backup alte WAR File"
 	mv jenkins.war jenkins.war.$actual_jenkins_version
+	if [ $? -ne 0 ];then
+		logErr "Konnte nicht jenkins backupen..."
+		exit 99
+	else
+		logInfo "Done"
+	fi
 
 	logInfo "Download letzte Jenkins Version"
 	wget -q https://updates.jenkins-ci.org/latest/jenkins.war
