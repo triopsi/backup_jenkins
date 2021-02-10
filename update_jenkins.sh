@@ -83,7 +83,7 @@ if [ "$actual_jenkins_version" != "$new_version"  ];then
 	mv jenkins.war jenkins.war.$actual_jenkins_version
 
 	logInfo "Download letzte Jenkins Version"
-	wget https://updates.jenkins-ci.org/latest/jenkins.war
+	wget -q https://updates.jenkins-ci.org/latest/jenkins.war
 	if [ $? -ne 0 ];then
 		logErr "Konnte nicht die letzte version von Jenkins downlaoden..."
 		exit 99
@@ -100,6 +100,7 @@ if [ "$actual_jenkins_version" != "$new_version"  ];then
 		logInfo "Done"
 	fi
 
+	cd -
 	#Warten auf wiederauferstehung
 	wait_bar
 
@@ -110,7 +111,7 @@ if [ "$actual_jenkins_version" != "$new_version"  ];then
     logInfo "Pruefe auf erreichbarkeit"
     while [ -z "${new_jenkins_version}" ];do
         logInfo "Versuch: $i"
-        new_jenkins_version=`java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api version`
+        new_jenkins_version=$( java -jar jenkins-cli.jar -s $jenkins_url -auth $auth_username:$auth_api version );
         if [ -z "$new_jenkins_version" ];then
             logInfo "Jenkins ist noch nicht erreichbar. Warte 20s fuer den naechsten Versuch."
             sleep 20
