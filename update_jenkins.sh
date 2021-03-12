@@ -16,6 +16,9 @@
 # 1) Edit the jenkins auth variable
 # 2) chmod +x updater.sh
 # 3) ./updater.sh 
+# 3b) via cron crontab -e
+# every night 1am
+# 0 1 * * * /bin/bash -c "/root/update_jenkins.sh" >> /var/log/updateJenkins.log 2>&1
 
 #Jenkins instance variable
 jenkins_url="http://localhost:8080/"
